@@ -1,5 +1,7 @@
 const commando = require('discord.js-commando');
-const bot = new commando.Client();
+const bot = new commando.Client({
+    unknownCommandResponse: false
+});
 const token = process.env.BOT_TOKEN;
 const channelId = 000000000;
 
