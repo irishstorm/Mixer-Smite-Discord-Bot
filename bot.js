@@ -1,7 +1,7 @@
 const commando = require('discord.js-commando');
 const bot = new commando.Client();
 const token = 'YOUR_TOKEN_HERE';
-const channelId = 19088261;
+const channelId = 000000000;
 
 const Mixer = require('beam-client-node');
 let mixerClient = new Mixer.Client(new Mixer.DefaultRequestRunner());
