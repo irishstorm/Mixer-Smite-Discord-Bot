@@ -1,39 +1,48 @@
 const commando = require('discord.js-commando');
-const bot = new commando.Client({
-    unknownCommandResponse: false
-});
-const token = process.env.BOT_TOKEN;
-const channelId = 000000000;
-
+const bot = new commando.Client({ unknownCommandResponse: false });
 const Mixer = require('beam-client-node');
-let mixerClient = new Mixer.Client(new Mixer.DefaultRequestRunner());
-let chatLog = [];
+const mixerClient = new Mixer.Client(new Mixer.DefaultRequestRunner());
 
-//  Mixer Api
-mixerClient.request('GET', '/chats/' + channelId + '/history')
-.then(res => {
-    for (var i = 0; i < res.body.length; i++){
-        if(res.body[i].message.message[0].text.includes("Most Recent Code")){
-            let code = res.body[i].user_name + " - " + res.body[i].message.message[0].text;
-            chatLog.push(code);
-            console.log(code);
-        }
-    }
+//   process.env.BOT_TOKEN
+let token = 'NDI4NDgxMDIwNTYwNTM5NjU4.DZztog.cFsvFdcetRXE36tE-CxwHT2eWOU';
+let channelId = 19088261;  //SmiteGame
+let lastCode = "Scraping chat for codes, This may take time. Try Again.";
+let lastPoll = "No Active Polls, Try Again.";
+
+bot.on("ready", () => {
+    getMixerCodes();
+    console.log(lastCode);
 })
-.catch(error => {
-    console.error(error);
-});
 
 bot.on('message', message => {
-    if (message.content === '!code') {
-        for (var i = 0; i < chatLog.length; i++){
-            if(chatLog[i] != null ){
-                message.channel.send(chatLog[i]);
-                console.log("Mixer.com : " + chatLog[i]);
-            }
-        }
+    if (message.content === '!code') {  
+        getMixerCodes();
+        message.channel.send(lastCode);
     }
 });
 
+function getMixerCodes(){
+    mixerClient.request('GET', '/chats/' + channelId + '/history')
+    .then(res => {
+        for (var i = 0; i < res.body.length; i++){
+            if(res.body[i].message.message[0].text.includes("!command add !lastdrop Most Recent Code: "))
+                FormatCode(res.body[i].message.message[0].text.slice(41, 58));
+            else if(res.body[i].message.message[0].text.includes("Most Recent Code: "))
+                FormatCode(res.body[i].message.message[0].text.slice(18, 47));
+            else
+                FormatCode(res.body[i].message.message[0].text);
+        }
+    })
+    .catch(error => { console.error(error); });
+}
+
+function FormatCode(currentCode){
+    if(currentCode.includes('APMCB'))
+        lastCode =  "Blue Mixer Chest - " + currentCode;
+    else if(currentCode.includes('APMCW'))
+        lastCode =  "White Mixer Chest - " + currentCode;
+    else if(currentCode.includes('APY'))
+        lastCode =  "Odyssey 2018 Chest - " + currentCode;
+}
 
 bot.login(token);
