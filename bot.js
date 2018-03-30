@@ -4,45 +4,65 @@ const Mixer = require('beam-client-node');
 const mixerClient = new Mixer.Client(new Mixer.DefaultRequestRunner());
 
 //   process.env.BOT_TOKEN
-let token = 'NDI4NDgxMDIwNTYwNTM5NjU4.DZztog.cFsvFdcetRXE36tE-CxwHT2eWOU';
+let token = process.env.BOT_TOKEN;
 let channelId = 19088261;  //SmiteGame
-let lastCode = "Scraping chat for codes, This may take time. Try Again.";
-let lastPoll = "No Active Polls, Try Again.";
+let chatMessages = [];
+let codeList = [];
+
+bot.login(token);
+
+//  ToDo:
+//  Read in chatlog and push it to an array.
+//  Find the code in the chatlog
+//  take it out and store one instance in a variable
+//  Push the code to an new array
+//  check to make sure the code is not already added
 
 bot.on("ready", () => {
-    getMixerCodes();
-    console.log(lastCode);
+    getChatMessages();
 })
 
 bot.on('message', message => {
     if (message.content === '!code') {  
-        getMixerCodes();
-        message.channel.send(lastCode);
+        getChatMessages();
+        message.channel.send(codeList[codeList.length - 1] + " ");
     }
 });
 
-function getMixerCodes(){
+bot.on('message', message => {
+    if (message.content === '!allcodes') {  
+        getChatMessages();
+        for (var i = 0; i < codeList.length; i++)
+            message.channel.send(codeList[i] + " ");
+    }
+});
+
+function getChatMessages(){
     mixerClient.request('GET', '/chats/' + channelId + '/history')
     .then(res => {
         for (var i = 0; i < res.body.length; i++){
-            if(res.body[i].message.message[0].text.includes("!command add !lastdrop Most Recent Code: "))
-                FormatCode(res.body[i].message.message[0].text.slice(41, 58));
-            else if(res.body[i].message.message[0].text.includes("Most Recent Code: "))
-                FormatCode(res.body[i].message.message[0].text.slice(18, 47));
-            else
-                FormatCode(res.body[i].message.message[0].text);
+            chatMessages.push(res.body[i].message.message[0].text);
         }
-    })
-    .catch(error => { console.error(error); });
+        findCodes(chatMessages);
+    });
 }
 
-function FormatCode(currentCode){
-    if(currentCode.includes('APMCB'))
-        lastCode =  "Blue Mixer Chest - " + currentCode;
-    else if(currentCode.includes('APMCW'))
-        lastCode =  "White Mixer Chest - " + currentCode;
-    else if(currentCode.includes('APY'))
-        lastCode =  "Odyssey 2018 Chest - " + currentCode;
+function findCodes(arrayObj){
+    arrayObj.map((res) => {
+        if(res.includes("APMCB")){
+            let temp = res.slice(res.indexOf("APMCB"), res.indexOf("APMCB") + 17);
+            if(!codeList.includes(temp))
+                codeList.push(temp);
+        }
+        else if(res.includes("APMCW")){
+            let temp = res.slice(res.indexOf("APMCW"), res.indexOf("APMCW") + 17);
+            if(!codeList.includes(temp))
+                codeList.push(temp);
+        }
+        else if(res.includes("APYSC")){
+            let temp = res.slice(res.indexOf("APYSC"), res.indexOf("APYSC") + 17);
+            if(!codeList.includes(temp))
+                codeList.push(temp);
+        }
+    });
 }
-
-bot.login(token);
