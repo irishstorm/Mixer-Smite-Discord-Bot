@@ -17,10 +17,6 @@ bot.login(token);
 //  take it out and store one instance in a variable
 //  Push the code to an new array
 //  check to make sure the code is not already added
-while(1){
-    getChatMessages();
-}
-
 bot.on("ready", () => {
     getChatMessages();
 })
