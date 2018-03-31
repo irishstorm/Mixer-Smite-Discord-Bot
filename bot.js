@@ -17,24 +17,20 @@ bot.login(token);
 //  take it out and store one instance in a variable
 //  Push the code to an new array
 //  check to make sure the code is not already added
-bot.on("ready", () => {
-    getChatMessages();
-})
-
 bot.on('message', message => {
     if (message.content === '!code') {  
-        getChatMessages();
         message.channel.send("/claimpromotion " + codeList[codeList.length - 1]);
     }
 });
 
 bot.on('message', message => {
     if (message.content === '!allcodes') {  
-        getChatMessages();
         for (var i = 0; i < codeList.length; i++)
             message.channel.send(codeList[i] + " ");
     }
 });
+
+setInterval(getChatMessages, 1000);
 
 function getChatMessages(){
     mixerClient.request('GET', '/chats/' + channelId + '/history')
