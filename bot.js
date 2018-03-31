@@ -30,7 +30,7 @@ bot.on('message', message => {
     }
 });
 
-setInterval(getChatMessages, 1000);
+setInterval(getChatMessages, 10000);
 
 function getChatMessages(){
     mixerClient.request('GET', '/chats/' + channelId + '/history')
@@ -39,7 +39,8 @@ function getChatMessages(){
             chatMessages.push(res.body[i].message.message[0].text);
         }
         findCodes(chatMessages);
-    });
+    })
+    .catch(error => { console.error(error); });
 }
 
 function findCodes(arrayObj){
