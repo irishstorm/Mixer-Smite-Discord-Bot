@@ -22,9 +22,11 @@ bot.on("ready", () => {
 })
 
 bot.on('message', message => {
-    if (message.content === '!code') {  
+    if (message.content === '!allcodes') {  
         getChatMessages();
-        message.channel.send(codeList[codeList.length - 1] + " ");
+        for (var i = 0; i < codeList.length; i++){
+            message.channel.send("/claimpromotion " + codeList[i]);
+        }
     }
 });
 
