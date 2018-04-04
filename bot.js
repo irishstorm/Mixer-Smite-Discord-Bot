@@ -29,7 +29,7 @@ bot.on('ready', function () {
         guild = g;
     });
 
-    channel = guild.channels.get("429022868140195842");
+    channel = guild.channels.get("431071036247638016");
 });
 
 bot.on('message', message => {
