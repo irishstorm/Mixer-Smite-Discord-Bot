@@ -44,8 +44,8 @@ bot.on('message', message => {
     }
     
     if (message.content === '!clear') {
-            message.channel.send("All codes have been cleared!");
-            codeList.length = 0;
+        codeList.length = 0;
+        message.channel.send("All codes have been cleared! " + codeList.length);
     }
     
 });
