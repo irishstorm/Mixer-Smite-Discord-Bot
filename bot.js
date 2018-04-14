@@ -28,7 +28,7 @@ bot.on('ready', function () {
     guilds.forEach(function (g) {
         guild = g;
     });
-
+    //  Discord channel id
     channel = guild.channels.get("431071036247638016");
 });
 
