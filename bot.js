@@ -36,14 +36,18 @@ bot.on('message', message => {
     if (message.content === '!code') {  
         message.channel.send("/claimpromotion " + codeList[codeList.length - 1]);
     }
-});
-
-bot.on('message', message => {
+    
     if (message.content === '!allcodes') {  
         for (var i = 0; i < codeList.length; i++){
             message.channel.send(codeList[i] + " ");
         }
     }
+    
+    if (message.content === '!clear') {
+            message.channel.send("All codes have been cleared!");
+            codeList.length = 0;
+    }
+    
 });
 
 setInterval(getChatMessages, 10000);
