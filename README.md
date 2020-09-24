@@ -1,2 +1,2 @@
-# Mixer-Smite-Code-Bot
+# Mixer-Smite-Discord-Bot
 Playing around with mixer api
